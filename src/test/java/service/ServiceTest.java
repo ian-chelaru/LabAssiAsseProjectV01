@@ -3,11 +3,8 @@ package service;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import repository.StudentXMLRepository;
 import repository.TemaXMLRepository;
-import validation.StudentValidator;
 import validation.TemaValidator;
-import validation.ValidationException;
 
 import static org.junit.Assert.*;
 
