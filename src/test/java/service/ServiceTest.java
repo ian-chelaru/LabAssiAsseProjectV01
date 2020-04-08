@@ -3,7 +3,9 @@ package service;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import repository.StudentXMLRepository;
 import repository.TemaXMLRepository;
+import validation.StudentValidator;
 import validation.TemaValidator;
 import validation.ValidationException;
 
@@ -11,88 +13,80 @@ import static org.junit.Assert.*;
 
 public class ServiceTest
 {
-
+    private TemaXMLRepository temaRepo;
     private Service service;
-    private TemaXMLRepository repo;
-    private TemaValidator validator;
 
     @Before
     public void setUp() throws Exception
     {
-        this.validator = new TemaValidator();
-        this.repo = new TemaXMLRepository(validator, "temeTest.xml");
-        this.service = new Service(null, repo, null);
+        TemaValidator temaValidator = new TemaValidator();
+        this.temaRepo = new TemaXMLRepository(temaValidator,"temeTest.xml");
+        this.service = new Service(null,temaRepo,null);
     }
 
     @After
     public void tearDown() throws Exception
     {
-    }
-
-    @Test
-    public void saveStudent()
-    {
-        int a = 3 + 2;
-        assertEquals(5, a);
+        temaRepo.delete("testId");
     }
 
     @Test
     public void saveTemaSuccess()
     {
+        String id = "testId";
+        String descriere = "testDesc";
         int deadline = 13;
         int startline = 2;
-        String id = "SomeId.txt";
-        String description = "SomeDesc.txt";
-        int result = service.saveTema(id, description, deadline, startline);
+        int result = service.saveTema(id,descriere,deadline,startline);
 
-        assertEquals(0, result);
+        assertEquals(1,result);
     }
 
     @Test
     public void saveTemaFailIdNull()
     {
-        int deadline = 13;
-        int startline = 2;
         String id = null;
-        String description = "SomeDesc.txt";
-        int result = service.saveTema(id, description, deadline, startline);
-
-        assertEquals(1, result);
-    }
-
-    @Test
-    public void saveTemaFailIdEmpty()
-    {
+        String descriere = "testDesc";
         int deadline = 13;
         int startline = 2;
-        String id = "";
-        String description = "SomeDesc.txt";
-        int result = service.saveTema(id, description, deadline, startline);
+        int result = service.saveTema(id,descriere,deadline,startline);
 
-        assertEquals(1, result);
-    }
-
-    @Test
-    public void saveTemaFailDescNull()
-    {
-        int deadline = 13;
-        int startline = 2;
-        String id = "SomeId.txt";
-        String description = null;
-        int result = service.saveTema(id, description, deadline, startline);
-
-        assertEquals(1, result);
+        assertEquals(0,result);
     }
 
     @Test
     public void saveTemaFailDescEmpty()
     {
+        String id = "testId";
+        String descriere = "";
         int deadline = 13;
         int startline = 2;
-        String id = "SomeId.txt";
-        String description = "";
-        int result = service.saveTema(id, description, deadline, startline);
+        int result = service.saveTema(id,descriere,deadline,startline);
 
-        assertEquals(1, result);
+        assertEquals(0,result);
+    }
+
+    @Test
+    public void saveTemaFailDeadlineIncorrect()
+    {
+        String id = "testId";
+        String descriere = "testDesc";
+        int deadline = 15;
+        int startline = 2;
+        int result = service.saveTema(id,descriere,deadline,startline);
+
+        assertEquals(0,result);
+    }
+
+    @Test
+    public void saveTemaFailStartlineIncorrect()
+    {
+        String id = "testId";
+        String descriere = "testDesc";
+        int deadline = 13;
+        int startline = 0;
+        int result = service.saveTema(id,descriere,deadline,startline);
+
+        assertEquals(0,result);
     }
 }
