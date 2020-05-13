@@ -100,22 +100,51 @@ public class Service
         {
             int deadline = temaXmlRepo.findOne(idTema).getDeadline();
 
-            if (predata - deadline > 2)
+            if (predata > deadline)
             {
-                valNota = 1;
+                if (predata - deadline > 2)
+                {
+                    valNota = 1;
+                }
+                else
+                {
+                    valNota = valNota - 2.5 * (predata - deadline);
+                }
             }
-            else
-            {
-                valNota = valNota - 2.5 * (predata - deadline);
-            }
-            Nota nota = new Nota(new Pair(idStudent,idTema),valNota,predata,feedback);
-            Nota result = notaXmlRepo.save(nota);
 
+            Nota nota = new Nota(new Pair(idStudent,idTema),valNota,predata,feedback);
+            Nota result;
+
+            try
+            {
+                result = notaXmlRepo.save(nota);
+            }
+            catch (ValidationException ve)
+            {
+                return 0;
+            }
             if (result == null)
             {
                 return 1;
             }
             return 0;
+
+//            if (predata - deadline > 2)
+//            {
+//                valNota = 1;
+//            }
+//            else
+//            {
+//                valNota = valNota - 2.5 * (predata - deadline);
+//            }
+//            Nota nota = new Nota(new Pair(idStudent,idTema),valNota,predata,feedback);
+//            Nota result = notaXmlRepo.save(nota);
+//
+//            if (result == null)
+//            {
+//                return 1;
+//            }
+//            return 0;
         }
     }
 
